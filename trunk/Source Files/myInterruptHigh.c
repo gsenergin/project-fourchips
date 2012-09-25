@@ -12,6 +12,7 @@
 ** 		      	   		   MAIN FUNCTIONS 				  		 **
 ******************************************************************/
 
+//#pragma interrupt myInterruptHigh
 void myInterruptHigh (void) {
 	
 }

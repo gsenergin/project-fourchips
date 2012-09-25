@@ -19,6 +19,8 @@
 
 	/****     		INITIALIZATION OF INTERRUPTIONS           ****/
 	
+	/****     				    FUNCTION           			  ****/
+	
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 

@@ -2,10 +2,12 @@
 **						  INCLUDES FILES						 **
 ******************************************************************/
 
-#include <p18cxxx.h>
 #include "../Header Files/globalSettings.h"
 #include "../Header Files/myInterruptLow.h"
 #include "../Header Files/myInterruptHigh.h"
+#include "../Header Files/initializations.h"
+#include "../Header Files/xlcd.h"
+#include "../Header Files/writeOnLCD.h"
 
 /******************************************************************
 ** 	    	   			COMPILER DIRECTIVES 	    		  	 **
