@@ -32,8 +32,13 @@ void initInterrupts (void) {
 	PIE1bits.TMR1IE = 1;		// Enables the TMR1 overflow interrupt [p123]
 	IPR1bits.TMR1IP = 1;		// TMR1 overflow interrupt set to high priority [p127]
 
-	/**		USART_RC		**/
+	/**		USART1_RC		**/
 	PIE1bits.RC1IE = 1; // Enables the USART1 receive interrupt [p123]
 	PIR1bits.RC1IF = 0; // USART1 receive buffer is empty [p118]
 	IPR1bits.RC1IP = 0; // USART1 receive interrupt set to low priority [p127]
+	
+	/**		USART2_RC		**/
+	PIE3bits.RC2IE = 1; // Enables the USART2 receive interrupt [p125]
+	PIR3bits.RC2IF = 0; // USART2 receive buffer is empty [p120]
+	IPR3bits.RC2IP = 1; // USART2 receive interrupt set to high priority [p129]
 }
