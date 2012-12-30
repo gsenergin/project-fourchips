@@ -12,7 +12,7 @@
 ** 		      	   		   MAIN FUNCTIONS 				  		 **
 ******************************************************************/
 
-void initUSART (void) {
+void initUSART1 (void) {
 	/****					LOCAL VARIABLES					  ****/
 	
 	/****     		 INITIALIZATION OF PERIPHERALS         	  ****/
@@ -38,7 +38,7 @@ void initUSART (void) {
 	SPBRG1 = 0x67;
 }
 
-void writeOnUSARTS (const rom char *string) {
+void writeOnUSART1S (const rom char *string) {
 	/****					LOCAL VARIABLES					  ****/
 	unsigned int i;
 	
@@ -52,7 +52,7 @@ void writeOnUSARTS (const rom char *string) {
 	}
 }
 
-void writeOnUSARTV (char string[]) {
+void writeOnUSART1V (char string[]) {
 	/****					LOCAL VARIABLES					  ****/
 	unsigned int i;
 	
@@ -66,7 +66,7 @@ void writeOnUSARTV (char string[]) {
 	}
 }
 
-void writeOnUSARTC (char charactere) {
+void writeOnUSART1C (char charactere) {
 	/****					LOCAL VARIABLES					  ****/
 	
 	/****     				    FUNCTION           			  ****/	

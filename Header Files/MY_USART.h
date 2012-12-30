@@ -17,15 +17,15 @@
 ******************************************************************/
 
 /**
- * Initializes the USART transmission and reception
+ * Initializes the USART1 transmission and reception
  * with a baud rate of 9600 bauds
  */
-void initUSART (void);
+void initUSART1 (void);
 
-void writeOnUSARTS (const rom char *string);
+void writeOnUSART1S (const rom char *string);
 
-void writeOnUSARTV (char string[]);
+void writeOnUSART1V (char string[]);
 
-void writeOnUSARTC (char charactere);
+void writeOnUSART1C (char charactere);
 
 #endif

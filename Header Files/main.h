@@ -16,6 +16,7 @@
 #include "LCD/LCD.h"
 #include "1WIRE.h"
 #include "ETHERNET/MyEthernet.h"
+#include "RFID.h"
 
 /******************************************************************
 ** 					ENUMERATIONS - DEFINITIONS					 **
