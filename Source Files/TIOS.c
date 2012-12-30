@@ -62,8 +62,12 @@ void TIOSInitialization (void) {
 	TRIS_RIGHT = IN;	// Configures the RIGHT button in INPUT (read)
 	TRIS_LEFT = IN;		// Configures the LEFT button in INPUT (read)
 	TRIS_CENTER = IN;	// Configures the CENTER button in INPUT (read)
+	
+	// Initialization of the TMR1
+	initTMR1();
 
 	/****     		INITIALIZATION OF INTERRUPTIONS           ****/
+	initInterrupts();
  	
  	//Initialisation pour variables CallBack Chrono
  	for (i = 0; i < MAXCALLBACKCHRONO; i++)
@@ -72,7 +76,6 @@ void TIOSInitialization (void) {
   		 TempsCB[i] = 0;
   	}
 } 
-
 
 // ****************  EnregistrerFonctionDeRappel ******************************
 // Sauve l'adresse de la fonction à rappeler. Lorsque le nombre d'interruptions
@@ -142,7 +145,16 @@ void TIOSStart (void) {
 #pragma interrupt MyInterruptHigh
 void MyInterruptHigh (void)
 {
-	
+	if (TMR1IFLAG) {
+		// Ajourner tous les ticks
+		unsigned char i;
+	  	for (i = 0; i < MAXCALLBACKCHRONO; i++) TickCB[i]++;
+	  	
+	  	// reconfiguration du Timer0
+	  	TMR1H = 0xFE;
+		TMR1L = 0x0B;
+	  	TMR1IFLAG = 0;
+	}
 }
 	
 
