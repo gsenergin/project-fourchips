@@ -13,7 +13,8 @@
 
 #define INT0IFLAG	INTCONbits.INT0IF	// Flag of INT0 [p115]
 #define TMR1IFLAG	PIR1bits.TMR1IF		// Flag of TMR1 [p118]
-#define RC1IFLAG	PIR1bits.RC1IF		// Flag of EUSART_RC [p118]
+#define USART1IFLAG	PIR1bits.RC1IF		// Flag of EUSART_RC [p118]
+#define RFIDIFLAG	PIR3bits.RC2IF
 
 /******************************************************************
 ** 	        		  FUNCTION PROTOTYPES	    	  			 **

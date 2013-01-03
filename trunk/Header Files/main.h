@@ -17,6 +17,8 @@
 #include "1WIRE.h"
 #include "ETHERNET/MyEthernet.h"
 #include "RFID.h"
+#include "Modules/authenticationModule.h"
+#include "Modules/serialDispatcher.h"
 
 /******************************************************************
 ** 					ENUMERATIONS - DEFINITIONS					 **
@@ -60,5 +62,7 @@ enum {NONE, UP, DOWN, LEFT, CENTER, RIGHT};		// Used with the button variable
 ******************************************************************/
 
 void main (void);
+
+void test (void);
 
 #endif

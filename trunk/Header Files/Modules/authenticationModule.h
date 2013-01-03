@@ -1,12 +1,11 @@
-#ifndef __MY_USART_H
-#define __MY_USART_H
+#ifndef __AUTHENTICATIONMODULE_H
+#define __AUTHENTICATIONMODULE_H
 
 /******************************************************************
 **						  INCLUDES FILES						 **
 ******************************************************************/
 
 #include "main.h"
-#include <string.h>
 
 /******************************************************************
 ** 				   ENUMERATIONS - DEFINITIONS					 **
@@ -16,18 +15,14 @@
 ** 	        		  FUNCTION PROTOTYPES	    	  			 **
 ******************************************************************/
 
-/**
- * Initializes the USART1 transmission and reception
- * with a baud rate of 9600 bauds
- */
-void initUSART1 (void);
+void getAuthentication (void);
 
-void writeOnUSART1S (const rom char *string);
+void setNameAndPassword (const rom char *string, char code1, char code2, char code3, char code4);
 
-void writeOnUSART1V (char string[]);
+void waitingOfThePassword (void);
 
-void writeOnUSART1C (char charactere);
+void enterCode (char code);
 
-void writeOnUSART1I (int integer);
+void checkCode (void);
 
 #endif
