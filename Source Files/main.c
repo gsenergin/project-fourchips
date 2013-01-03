@@ -29,7 +29,10 @@
 /******************************************************************
 ** 		      	  GLOBAL VARIABLES (inside the file) 		 	 **
 ******************************************************************/
+
 APP_CONFIG AppConfig;
+extern unsigned char IDCB_serialDispatcher;
+unsigned char IDCB_test = 0;
 
 /******************************************************************
 **              		  MAIN PROGRAM 				  			 **
@@ -39,8 +42,12 @@ void main (void)
 {
  	// Initialisation de l'OS (appel des Callbacks)
 	TIOSInitialization();
+	
+	//setNameAndPassword ("Lionel Malherbe", UP, DOWN, LEFT, RIGHT);
+	//writeOnUSART1S("H");
 
 	// Initialisation des Callbacks
+	TIOSSaveCallBack (&IDCB_serialDispatcher, serialDispatcher, 200);
 	
  	// Lancement OS (Boucle infinie)
 	TIOSStart();
@@ -49,3 +56,6 @@ void main (void)
 /******************************************************************
 ** 	        		  	  MAIN FUNCTIONS	    	  			 **
 ******************************************************************/
+void test (void) {
+	writeOnUSART1S("#01@Lionel Malherbe\n");	
+}

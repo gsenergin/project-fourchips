@@ -11,6 +11,14 @@ void (*MaCB[MAXCALLBACKCHRONO])(void);
 unsigned int TempsCB[MAXCALLBACKCHRONO];
 volatile unsigned int TickCB[MAXCALLBACKCHRONO];
 
+extern volatile unsigned char RFID_Write_Flag;
+extern volatile unsigned char RFID_Read_Flag;
+extern volatile unsigned char RFID_i;
+extern volatile unsigned char RFID_Read_Resultat[10];
+
+extern volatile unsigned char receivedChar, i_receivedString;
+extern char receivedString[21], button;
+
 /******************************************************************
 ** 	       COMPILATION INSTRUCTIONS FOR INTERRUPTIONS 	    	 **
 ******************************************************************/
@@ -66,6 +74,15 @@ void TIOSInitialization (void) {
 	// Initialization of the TMR1
 	initTMR1();
 
+	// Initialization of the USART1
+	initUSART1();
+	
+	// Initialization of the RFID
+	initRFID();
+	
+	// Initialization of the LCD
+	initLCD();
+	
 	/****     		INITIALIZATION OF INTERRUPTIONS           ****/
 	initInterrupts();
  	
@@ -155,11 +172,64 @@ void MyInterruptHigh (void)
 		TMR1L = 0x0B;
 	  	TMR1IFLAG = 0;
 	}
+	
+	if (RFIDIFLAG) {
+		if (RFID_Read_Flag) {
+			RFID_Read_Resultat[RFID_i] = RCREG2;
+			RFID_i++;
+			
+			if (RFID_i >= 10) {
+				RFID_i = 0;
+				RFID_Read_Flag = OFF;
+				PORT_RELAY ^= ON;
+			}
+		}
+		else if (RFID_Write_Flag) {
+			RFID_Read_Resultat[RFID_i] = RCREG2;
+			
+			RFID_i++;
+			
+			if (RFID_i >= 6) {
+				RFID_i = 0;
+				RFID_Write_Flag = OFF;
+			}
+		}
+		
+		RFIDIFLAG = 0;
+	}
+	
+	if (INT0IFLAG) {
+		if (PORT_UP == 0)
+			button = UP;
+		else if (PORT_DOWN == 0)
+			button = DOWN;
+		else if (PORT_LEFT == 0)
+			button = LEFT;
+		else if (PORT_CENTER == 0)
+			button = CENTER;
+		else if (PORT_RIGHT == 0)
+			button = RIGHT;
+			
+		INT0IFLAG = 0;
+	}	
 }
 	
 
 #pragma interrupt MyInterruptLow
 void MyInterruptLow (void)
 {
-	
+	if (USART1IFLAG) {
+		receivedChar = RCREG1;
+		
+		if (receivedChar == '#')
+			i_receivedString = 0;
+		
+		if (i_receivedString < 21) {
+			receivedString[i_receivedString] = receivedChar;
+			i_receivedString++;
+			receivedString[i_receivedString] = '\0';
+		}
+		
+		USART1IFLAG = 0;
+	}	
 }

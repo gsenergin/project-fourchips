@@ -1,35 +1,30 @@
 #ifndef _RFID_H
 #define _RFID_H
 
-// INCLUDE (si applicable)
+/******************************************************************
+**						  INCLUDES FILES						 **
+******************************************************************/
 
 #include "main.h"
 
-// DEFINE
+/******************************************************************
+** 				   ENUMERATIONS - DEFINITIONS					 **
+******************************************************************/
 
-
-//Définit le tampon de réception maximal RFID
 #define MAXBUFRFID				11 
 
+/******************************************************************
+** 	        		  FUNCTION PROTOTYPES	    	  			 **
+******************************************************************/
 
+void initRFID (void);
 
-
-
-// VALEURS CORRESPONDANTS AUX COMMANDES DU RFID
-
-
-
-
-/* Déclaration des fonctions */
-void LiczCRC2(unsigned char *ZAdr, unsigned short *DoAdr,  unsigned char Ile);
+void LiczCRC2 (unsigned char *ZAdr, unsigned short *DoAdr,  unsigned char Ile); 
 
 void calculCRC (unsigned char bufRFID[9]);
 
-void writeOnRFIDW(char dataByte1, char dataByte2, char dataByte3, char dataByte4, char dataSector);
+void RFID_Write(char dataByte1, char dataByte2, char dataByte3, char dataByte4, char dataSector);	
 
-void writeOnRFIDR(char dataSector);
+void RFID_Read(char dataSector);	
 
-void initRFID ();
-
-
-#endif /* _RFID_H */
+#endif
