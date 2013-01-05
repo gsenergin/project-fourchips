@@ -11,24 +11,47 @@
 ** 				   ENUMERATIONS - DEFINITIONS					 **
 ******************************************************************/
 
-//Définit le nombre maximal de callback de type Chrono
-#define	MAXCALLBACKCHRONO		10
+// Defines the maximum number of callback
+#define	MAX_CB		10
 
 /******************************************************************
 ** 	        		  FUNCTION PROTOTYPES	    	  			 **
 ******************************************************************/
 
-//Initialisation de TIOS
+/**
+ * Defines the FOSC
+ * Defines all ANSELx registers in NUMERIC
+ * Initializes the LED
+ * Initializes the RELAY
+ * Initializes the Buttons
+ * Initializes the TMR1
+ * Initializes the USART1
+ * Initializes the RFID
+ * Initializes the LCD
+ * Initializes the interruptions
+ * Initializes the necessary tables for callback
+ */
 void TIOSInitialization (void);
 
-//Enregistrer des fonctions callback liées au temps
-//Retourne un ID associé à l'enregistrement
-void TIOSSaveCallBack (unsigned char* IDCB, void(*ptFonction)(void), unsigned int tps); 
+/**
+ * Saves a callback on the callback table if there is an empty place and sets the ID callback
+ *
+ * @param	IDCB			ID of the callback
+ * @param	functionPtr		pointer of the function to save
+ * @param	CB_time			time in ms at which the function has to be recalled
+ */
+void TIOSSaveCB (unsigned char* IDCB, void(*functionPtr)(void), unsigned int CB_time); 
 
-//Retirer des fonctions callback liées au temps, prend l'ID du CallBack comme argument
-void TIOSRetirerCB_TIMER (unsigned char* IDCB);
+/**
+ * Removes the callback on the callback table
+ *
+ * @param	IDCB			ID of the callback to remove
+ */
+void TIOSRemoveCB (unsigned char* IDCB);
 
-//Démarrage de la boucle principale
+/**
+ * Starts the infinite loop (the OS)
+ */
 void TIOSStart (void);
 
 /******************************************************************

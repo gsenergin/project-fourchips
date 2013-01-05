@@ -1,24 +1,21 @@
-#ifndef __SERIALDISPATCHER_H
-#define __SERIALDISPATCHER_H
-
 /******************************************************************
 **						  INCLUDES FILES						 **
 ******************************************************************/
 
-#include "main.h"
+#include "Modules/moduleEthernet.h"
 
 /******************************************************************
-** 				   ENUMERATIONS - DEFINITIONS					 **
+** 		      	   GLOBAL VARIABLES (inside the file)			 **
 ******************************************************************/
+
+unsigned char IDCB_stackUpdate = 0;
+APP_CONFIG AppConfig;
 
 /******************************************************************
-** 	        		  FUNCTION PROTOTYPES	    	  			 **
+** 		      	   		   MAIN FUNCTIONS 				  		 **
 ******************************************************************/
 
-/**
- * This function is recalled each 200ms and manage the frame sent
- * by the C# program and call or save as callback the appropriate function(s)
- */
-void serialDispatcher (void);
-
-#endif
+void stackUpdate (void) {
+	StackTask();
+	StackApplications();
+}	
