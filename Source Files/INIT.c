@@ -35,7 +35,7 @@ void initInterrupts (void) {
 	/**		USART1_RC		**/
 	PIR1bits.RC1IF = 0; // USART1 receive buffer is empty [p118]
 	PIE1bits.RC1IE = 1; // Enables the USART1 receive interrupt [p123]
-	IPR1bits.RC1IP = 0; // USART1 receive interrupt set to low priority [p127]
+	IPR1bits.RC1IP = 1; // USART1 receive interrupt set to low priority [p127]
 	
 	/**		USART2_RC		**/
 	PIR3bits.RC2IF = 0; // USART2 receive buffer is empty [p120]

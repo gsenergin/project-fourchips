@@ -1,21 +1,24 @@
+#ifndef __LED_H
+#define __LED_H
+
 /******************************************************************
 **						  INCLUDES FILES						 **
 ******************************************************************/
 
-#include "Modules/moduleEthernet.h"
+#include "main.h"
 
 /******************************************************************
-** 		      	   GLOBAL VARIABLES (inside the file)			 **
+** 				   ENUMERATIONS - DEFINITIONS					 **
 ******************************************************************/
 
-unsigned char IDCB_stackUpdate = 0;
-APP_CONFIG AppConfig;
+//Définit le nombre maximal de callback de type Chrono
+
 
 /******************************************************************
-** 		      	   		   MAIN FUNCTIONS 				  		 **
+** 	        		  FUNCTION PROTOTYPES	    	  			 **
 ******************************************************************/
 
-void stackUpdate (void) {
-	StackTask();
-	StackApplications();
-}	
+
+void clignotementLED(char cpt[] );
+void clignotement(void);
+#endif

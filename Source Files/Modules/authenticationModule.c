@@ -10,6 +10,7 @@
 
 unsigned char IDCB_getAuthentication = 0;
 unsigned char IDCB_waitingOfThePassword = 0;
+extern unsigned char IDCB_Chronometre;
 
 char messageAuthentificationFlag = ON;
 extern volatile unsigned char RFID_Read_Resultat[10];
@@ -180,6 +181,7 @@ void checkCode (void) {
 		if ((tabCode[0] == tablePassword[0]) & (tabCode[1] == tablePassword[1]) & (tabCode[2] == tablePassword[2]) & (tabCode[3] == tablePassword[3])) { //Good code entered
 			strcpy(tableDataToSend, LOGINTRUE);
 			TIOSRemoveCB(&IDCB_waitingOfThePassword);
+			TIOSSaveCB(&IDCB_Chronometre, chronometre, 60000);
 		}	
 		else { //Wrong code entered
 			strcpy(tableDataToSend, LOGINFALSE);

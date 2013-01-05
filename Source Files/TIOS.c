@@ -134,7 +134,7 @@ void TIOSStart (void) {
 	while(1) {
 		// A loop on all the CB table
 		for (i = 0; i < MAX_CB; i++) {
-			
+			stackUpdate();
 			if (CB_PTR_Table[i]) {	// If the CB_PTR_Table[i] is different than 0, there is a callback to analyze
 				
 				//Si on est arrivé au nombre de mS demandé, on appelle la fonction 
@@ -209,16 +209,7 @@ void MyInterruptHigh (void)
 			
 		// Reconfiguration of the INT0 interruption flag
 		INT0IFLAG = 0;
-	}	
-}
-	
-
-#pragma interrupt MyInterruptLow
-void MyInterruptLow (void)
-{
-	if (TMR0IFLAG) {
-		TickUpdate();
-	}	
+	}
 	
 	if (USART1IFLAG) {
 		receivedChar = RCREG1;
@@ -238,5 +229,14 @@ void MyInterruptLow (void)
 		
 		// Reconfiguration of the USART1 interruption flag
 		USART1IFLAG = 0;
-	}
+	}	
+}
+	
+
+#pragma interrupt MyInterruptLow
+void MyInterruptLow (void)
+{	
+	if (TMR0IFLAG)
+		TickUpdate();
+	
 }
