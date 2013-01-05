@@ -19,6 +19,7 @@
 #include "RFID.h"
 #include "Modules/authenticationModule.h"
 #include "Modules/serialDispatcher.h"
+#include "Modules/moduleEthernet.h"
 
 /******************************************************************
 ** 					ENUMERATIONS - DEFINITIONS					 **

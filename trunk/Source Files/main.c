@@ -30,8 +30,9 @@
 ** 		      	  GLOBAL VARIABLES (inside the file) 		 	 **
 ******************************************************************/
 
-APP_CONFIG AppConfig;
+//extern APP_CONFIG AppConfig;
 extern unsigned char IDCB_serialDispatcher;
+extern unsigned char IDCB_stackUpdate;
 unsigned char IDCB_test = 0;
 
 /******************************************************************
@@ -47,7 +48,8 @@ void main (void)
 	//writeOnUSART1S("H");
 
 	// Initialisation des Callbacks
-	TIOSSaveCallBack (&IDCB_serialDispatcher, serialDispatcher, 200);
+	TIOSSaveCB (&IDCB_serialDispatcher, serialDispatcher, 200);
+	TIOSSaveCB (&IDCB_stackUpdate, stackUpdate, 500);
 	
  	// Lancement OS (Boucle infinie)
 	TIOSStart();

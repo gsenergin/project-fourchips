@@ -26,12 +26,15 @@ char receivedString[21] = "", EMPTY[] = "",
 ******************************************************************/
 
 void serialDispatcher (void) {
+	/****					LOCAL VARIABLES					  ****/
+	
+	/****     				    FUNCTION           			  ****/	
 	if (strncmp(receivedString, HELLO, 4) == 0) {
-		TIOSSaveCallBack (&IDCB_getAuthentication, getAuthentication, 2200);
+		TIOSSaveCB(&IDCB_getAuthentication, getAuthentication, 2200);
 		strcpy(receivedString, EMPTY);
 	}
 	else if (messageAuthentificationFlag) {
 		writeOnLCDS(FLUSH, 0x00, "Please login");
 		writeOnLCDS(NOFLUSH, 0x40, "with RFID card");
-	}	
+	}		
 }	

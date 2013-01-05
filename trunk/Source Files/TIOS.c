@@ -7,9 +7,9 @@
 /******************************************************************
 ** 		      	   GLOBAL VARIABLES (inside the file)			 **
 ******************************************************************/
-void (*MaCB[MAXCALLBACKCHRONO])(void);
-unsigned int TempsCB[MAXCALLBACKCHRONO];
-volatile unsigned int TickCB[MAXCALLBACKCHRONO];
+void (*CB_PTR_Table[ MAX_CB ])(void);
+unsigned int CB_TIME_Table[ MAX_CB ];
+volatile unsigned int CB_TICK_Table[ MAX_CB ];
 
 extern volatile unsigned char RFID_Write_Flag;
 extern volatile unsigned char RFID_Read_Flag;
@@ -71,6 +71,13 @@ void TIOSInitialization (void) {
 	TRIS_LEFT = IN;		// Configures the LEFT button in INPUT (read)
 	TRIS_CENTER = IN;	// Configures the CENTER button in INPUT (read)
 	
+	// Initialization of the TMR0
+	TickInit();
+	
+	// Initialization of the ETHERNET
+	InitAppConfig();
+	StackInit();
+	
 	// Initialization of the TMR1
 	initTMR1();
 
@@ -87,67 +94,55 @@ void TIOSInitialization (void) {
 	initInterrupts();
  	
  	//Initialisation pour variables CallBack Chrono
- 	for (i = 0; i < MAXCALLBACKCHRONO; i++)
- 	{
-  		 MaCB[i] = 0;
-  		 TempsCB[i] = 0;
+ 	for (i = 0; i < MAX_CB; i++) {
+	 	CB_PTR_Table[i] = 0;
+	 	CB_TIME_Table[i] = 0;
   	}
-} 
+}
 
-// ****************  EnregistrerFonctionDeRappel ******************************
-// Sauve l'adresse de la fonction à rappeler. Lorsque le nombre d'interruptions
-// aura atteint temps millisecondes, le système rappellera la fonction
-// *************************************************************************
-void TIOSSaveCallBack (unsigned char* IDCB, void(*ptFonction)(void), unsigned int tps) {
- 	unsigned char i; 
+void TIOSSaveCB (unsigned char* IDCB, void(*functionPtr)(void), unsigned int CB_time) {
+	unsigned char i; 
  	
  	if (*IDCB == 0 | *IDCB == 255) {
-	 	// on commence à 1 car les IDCB sont initialisés à 0 !!
-	 	for (i = 1; MaCB[i] != 0 && i < MAXCALLBACKCHRONO; i++);
+	 	// We don't begin at 1 because the IDCB are initialized to 0
+	 	for (i = 1; i < MAX_CB && CB_PTR_Table[i] != 0; i++);
 	 	
-		//S'il reste de la place on enregistre et on retourne 0 (opération réussie)
-	 	if (i < MAXCALLBACKCHRONO) {
-			MaCB[i] = ptFonction;
-			TempsCB[i] = tps; 
-			TickCB[i] = 0; //Initialiser le compteur à 0;
+		// If there is an empty place, we save the functionPtr, CB_time and IDCB
+	 	if (i < MAX_CB) {
+			CB_PTR_Table[i] = functionPtr;
+			CB_TIME_Table[i] = CB_time; 
+			CB_TICK_Table[i] = 0;	// the CB_TICK is initialized to 0
 			
-			*IDCB = i; // ID du call back
+			*IDCB = i;
 	  	}
 	 	else 
-	 		*IDCB = 255; //Il n'y a plus de place pour enregistrer un callback
+	 		*IDCB = 255;	// If there is no empty place to save the CB, the IDCD is set to 255
 	 }		
 }
 
-
-// ****************  Retirer fonction de rappel ******************************
-// Libère l'emplacement de la callback
-// *************************************************************************
-void TIOSRetirerCB_TIMER (unsigned char* IDCB) {
-	if ((*IDCB > 0) && *IDCB < MAXCALLBACKCHRONO) {
-		MaCB[*IDCB] = 0;
-		TempsCB[*IDCB] = 0;
+void TIOSRemoveCB (unsigned char* IDCB) {
+	if ((*IDCB > 0) && *IDCB < MAX_CB) {
+		CB_PTR_Table[*IDCB] = 0;
+		CB_TIME_Table[*IDCB] = 0;
 		*IDCB = 0;
 	}
 }
 
-
-
-// ****************  Boucle principale de l'OS ******************************
-// Boucle infinie qui attend des événement liés aux interruptions pour 
-// appeler les fonctions enregistrées
-// *************************************************************************
 void TIOSStart (void) {
-	unsigned char idx;
+	unsigned char i;
 	
 	while(1) {
-		// Check les conditions pour rappeler les fonctions liées au temps 
-		for (idx = 0; idx < MAXCALLBACKCHRONO; idx++)
-		{
-			if (MaCB[idx]) {//Si on a l'adresse d'une fonction CB à cet index
+		// A loop on all the CB table
+		for (i = 0; i < MAX_CB; i++) {
+			
+			if (CB_PTR_Table[i]) {	// If the CB_PTR_Table[i] is different than 0, there is a callback to analyze
+				
 				//Si on est arrivé au nombre de mS demandé, on appelle la fonction 
-				if (TickCB[idx] >= TempsCB[idx]) { 
-					TickCB[idx] = 0;
-					MaCB[idx]();  //Rappel de la fonction enregistrée!
+				// If the CB_TICK_Table[i] is equal or greater than the CB_TIME_Table[i], we have to call the CB_PTR_Table[i]
+				if (CB_TICK_Table[i] >= CB_TIME_Table[i]) { 
+					
+					CB_TICK_Table[i] = 0;
+					CB_PTR_Table[i]();
 				}
 			}	
 		}
@@ -163,38 +158,40 @@ void TIOSStart (void) {
 void MyInterruptHigh (void)
 {
 	if (TMR1IFLAG) {
-		// Ajourner tous les ticks
 		unsigned char i;
-	  	for (i = 0; i < MAXCALLBACKCHRONO; i++) TickCB[i]++;
+		
+	  	for (i = 0; i < MAX_CB; i++) 
+	  		CB_TICK_Table[i]++;	// Increment of all the CB_TICK_Table cells
 	  	
-	  	// reconfiguration du Timer0
+	  	// Reconfiguration of the TMR1 buffers and interruption flag
 	  	TMR1H = 0xFE;
 		TMR1L = 0x0B;
 	  	TMR1IFLAG = 0;
 	}
 	
 	if (RFIDIFLAG) {
-		if (RFID_Read_Flag) {
+		if (RFID_Read_Flag) { // If it is the response of a read command frame
 			RFID_Read_Resultat[RFID_i] = RCREG2;
 			RFID_i++;
 			
-			if (RFID_i >= 10) {
+			if (RFID_i >= 10) { // The read command response frame is 10 bytes long
 				RFID_i = 0;
 				RFID_Read_Flag = OFF;
-				PORT_RELAY ^= ON;
+				PORT_RELAY ^= ON;	// The RELAY switches when a sector is read
 			}
 		}
-		else if (RFID_Write_Flag) {
+		else if (RFID_Write_Flag) {	// If it is the response of a write command frame
 			RFID_Read_Resultat[RFID_i] = RCREG2;
 			
 			RFID_i++;
 			
-			if (RFID_i >= 6) {
+			if (RFID_i >= 6) {	// The write command response frame is 10 bytes long
 				RFID_i = 0;
 				RFID_Write_Flag = OFF;
 			}
 		}
 		
+		// Reconfiguration of the RFID interruption flag
 		RFIDIFLAG = 0;
 	}
 	
@@ -210,6 +207,7 @@ void MyInterruptHigh (void)
 		else if (PORT_RIGHT == 0)
 			button = RIGHT;
 			
+		// Reconfiguration of the INT0 interruption flag
 		INT0IFLAG = 0;
 	}	
 }
@@ -218,18 +216,27 @@ void MyInterruptHigh (void)
 #pragma interrupt MyInterruptLow
 void MyInterruptLow (void)
 {
+	if (TMR0IFLAG) {
+		TickUpdate();
+	}	
+	
 	if (USART1IFLAG) {
 		receivedChar = RCREG1;
 		
+		/* Because the code we receive from the C# program begins and only contains a # character, 
+		 * we set the i_receivedString to 0 which determines the place where we have to add the receivedChar
+		 * on the receivedString table
+		 */
 		if (receivedChar == '#')
 			i_receivedString = 0;
 		
-		if (i_receivedString < 21) {
-			receivedString[i_receivedString] = receivedChar;
+		if (i_receivedString < 21) {	// The frame we receive from the C# program never exceed 21 characters
+			receivedString[i_receivedString] = receivedChar;	// We places the receivedChar at the good position on the receivedString table
 			i_receivedString++;
-			receivedString[i_receivedString] = '\0';
+			receivedString[i_receivedString] = '\0'; // We add a \0 to the receivedString to be correctly interpreted by the program later
 		}
 		
+		// Reconfiguration of the USART1 interruption flag
 		USART1IFLAG = 0;
-	}	
+	}
 }

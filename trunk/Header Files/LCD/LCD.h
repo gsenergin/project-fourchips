@@ -48,6 +48,18 @@ void prepareLCD (int flushStatut, int position);
 void writeOnLCDS (int flushStatut, int position, const rom char *string);
 
 /**
+ * This function is used to slide a STRING on a specified line
+ *
+ * ATTENTION : You have to call this function many times to make the "sliding effect"
+ *
+ * @param	flushStatut	if it is FLUSH, the screen is erased, 
+ *						else, NOFLUSH does nothing
+ * @param	line		if it is 1, the STRING will slide on the 1st line of the LCD
+ *						else, the STRING will slide on the 2nd line of the LCD
+ */
+void writeOnLCDSlidingS (int flushStatut, char line, const rom char *string);
+
+/**
  * This function call the prepareLCD() function and write a CHARACTER
  *
  * @param	flushStatut	if it is FLUSH, the screen is erased, 
