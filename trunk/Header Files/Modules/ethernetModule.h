@@ -1,5 +1,5 @@
-#ifndef __MODULEETHERNET_H
-#define __MODULEETHERNET_H
+#ifndef __ETHERNETMODULE_H
+#define __ETHERNETMODULE_H
 
 /******************************************************************
 **						  INCLUDES FILES						 **
@@ -16,5 +16,7 @@
 ******************************************************************/
 
 void stackUpdate (void);
+
+void updateCardNIC (char receivedString[]);
 
 #endif

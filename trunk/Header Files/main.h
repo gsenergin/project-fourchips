@@ -15,11 +15,13 @@
 #include "MY_USART.h"
 #include "LCD/LCD.h"
 #include "1WIRE.h"
-#include "ETHERNET/MyEthernet.h"
+#include "ETHERNET/ETHERNET.h"
 #include "RFID.h"
 #include "Modules/authenticationModule.h"
 #include "Modules/serialDispatcher.h"
-#include "Modules/moduleEthernet.h"
+#include "Modules/ethernetModule.h"
+#include "Modules/CHRONO.h"
+#include "Modules/LED.h"
 
 /******************************************************************
 ** 					ENUMERATIONS - DEFINITIONS					 **

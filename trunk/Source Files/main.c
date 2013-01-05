@@ -49,7 +49,8 @@ void main (void)
 
 	// Initialisation des Callbacks
 	TIOSSaveCB (&IDCB_serialDispatcher, serialDispatcher, 200);
-	TIOSSaveCB (&IDCB_stackUpdate, stackUpdate, 500);
+	//TIOSSaveCB (&IDCB_stackUpdate, stackUpdate, 200);
+//	TIOSSaveCB (&IDCB_test, test, 5000);
 	
  	// Lancement OS (Boucle infinie)
 	TIOSStart();
@@ -59,5 +60,6 @@ void main (void)
 ** 	        		  	  MAIN FUNCTIONS	    	  			 **
 ******************************************************************/
 void test (void) {
-	writeOnUSART1S("#01@Lionel Malherbe\n");	
+	setIP_ADDR(192, 168, 1, 150);
+	TIOSRemoveCB(&IDCB_test);
 }
