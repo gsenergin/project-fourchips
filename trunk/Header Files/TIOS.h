@@ -12,7 +12,7 @@
 ******************************************************************/
 
 // Defines the maximum number of callback
-#define	MAX_CB		10
+#define	MAX_CB		15
 
 /******************************************************************
 ** 	        		  FUNCTION PROTOTYPES	    	  			 **

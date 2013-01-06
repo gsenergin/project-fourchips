@@ -35,11 +35,11 @@ void writeOnUSART1V (char string[]);
 /**
  * This function writes a CHARACTER
  */
-void writeOnUSART1C (char charactere);
+//void writeOnUSART1C (char charactere);
 
 /**
  * This function writes an INTEGER
  */
-void writeOnUSART1I (int integer);
+//void writeOnUSART1I (int integer);
 
 #endif

@@ -49,9 +49,12 @@ void updateCardNIC (char receivedString[]) {
 	receivedBYTE3[ strlen(receivedBYTE1) ] = '\0';
 	receivedBYTE4[ strlen(receivedBYTE1) ] = '\0';
 	
-	BYTE1 = (unsigned long)atoi(receivedBYTE1);
+	BYTE1 = strtoul(receivedBYTE1, NULL, 10);
+	BYTE2 = strtoul(receivedBYTE2, NULL, 10);
+	BYTE3 = strtoul(receivedBYTE3, NULL, 10);
+	BYTE4 = strtoul(receivedBYTE4, NULL, 10);
 	
-	/*	DEBUG
+	/*	//DEBUG
 	writeOnUSART1V(receivedBYTE1);
 	writeOnUSART1V(receivedBYTE2);
 	writeOnUSART1V(receivedBYTE3);
@@ -72,5 +75,5 @@ void updateCardNIC (char receivedString[]) {
 	}
 	else if (strncmp(receivedString, CARD_DNS2, 4) == 0) {
 		setSECONDARY_DNS(BYTE1, BYTE2, BYTE3, BYTE4);
-	}	
+	}
 }	
