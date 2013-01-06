@@ -6,6 +6,7 @@
 ******************************************************************/
 
 #include <p18cxxx.h>
+#include <stdlib.h>
 #include <string.h>
 #include <delays.h>
 #include "INIT.h"
@@ -22,6 +23,7 @@
 #include "Modules/ethernetModule.h"
 #include "Modules/CHRONO.h"
 #include "Modules/LED.h"
+#include "strtoul.h"
 
 /******************************************************************
 ** 					ENUMERATIONS - DEFINITIONS					 **

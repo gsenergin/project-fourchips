@@ -132,9 +132,9 @@ void TIOSStart (void) {
 	unsigned char i;
 	
 	while(1) {
+		stackUpdate();
 		// A loop on all the CB table
 		for (i = 0; i < MAX_CB; i++) {
-			stackUpdate();
 			if (CB_PTR_Table[i]) {	// If the CB_PTR_Table[i] is different than 0, there is a callback to analyze
 				
 				//Si on est arrivé au nombre de mS demandé, on appelle la fonction 
@@ -169,6 +169,26 @@ void MyInterruptHigh (void)
 	  	TMR1IFLAG = 0;
 	}
 	
+	if (USART1IFLAG) {
+		receivedChar = RCREG1;
+		
+		/* Because the code we receive from the C# program begins and only contains a # character, 
+		 * we set the i_receivedString to 0 which determines the place where we have to add the receivedChar
+		 * on the receivedString table
+		 */
+		if (receivedChar == '#')
+			i_receivedString = 0;
+		
+		if (i_receivedString < 21) {	// The frame we receive from the C# program never exceed 21 characters
+			receivedString[i_receivedString] = receivedChar;	// We places the receivedChar at the good position on the receivedString table
+			i_receivedString++;
+			receivedString[i_receivedString] = '\0'; // We add a \0 to the receivedString to be correctly interpreted by the program later
+		}
+		
+		// Reconfiguration of the USART1 interruption flag
+		USART1IFLAG = 0;
+	}
+	
 	if (RFIDIFLAG) {
 		if (RFID_Read_Flag) { // If it is the response of a read command frame
 			RFID_Read_Resultat[RFID_i] = RCREG2;
@@ -196,6 +216,7 @@ void MyInterruptHigh (void)
 	}
 	
 	if (INT0IFLAG) {
+		Delay10KTCYx(40);
 		if (PORT_UP == 0)
 			button = UP;
 		else if (PORT_DOWN == 0)
@@ -210,33 +231,11 @@ void MyInterruptHigh (void)
 		// Reconfiguration of the INT0 interruption flag
 		INT0IFLAG = 0;
 	}
-	
-	if (USART1IFLAG) {
-		receivedChar = RCREG1;
-		
-		/* Because the code we receive from the C# program begins and only contains a # character, 
-		 * we set the i_receivedString to 0 which determines the place where we have to add the receivedChar
-		 * on the receivedString table
-		 */
-		if (receivedChar == '#')
-			i_receivedString = 0;
-		
-		if (i_receivedString < 21) {	// The frame we receive from the C# program never exceed 21 characters
-			receivedString[i_receivedString] = receivedChar;	// We places the receivedChar at the good position on the receivedString table
-			i_receivedString++;
-			receivedString[i_receivedString] = '\0'; // We add a \0 to the receivedString to be correctly interpreted by the program later
-		}
-		
-		// Reconfiguration of the USART1 interruption flag
-		USART1IFLAG = 0;
-	}	
 }
 	
 
 #pragma interrupt MyInterruptLow
 void MyInterruptLow (void)
-{	
-	if (TMR0IFLAG)
-		TickUpdate();
-	
+{
+	TickUpdate();	
 }

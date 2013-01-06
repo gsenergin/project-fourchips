@@ -65,12 +65,12 @@ void writeOnUSART1V (char string[]) {
 		TXREG1 = string[i];	// Buffer filling [p275]
 	}
 }
-
+/*
 void writeOnUSART1C (char charactere) {
 	/****					LOCAL VARIABLES					  ****/
 	
 	/****     				    FUNCTION           			  ****/	
-	while (!TXSTA1bits.TRMT);	
+/*	while (!TXSTA1bits.TRMT);	
 	TXREG1 = charactere;	// Buffer filling [p275]
 }
 
@@ -78,6 +78,6 @@ void writeOnUSART1I (int integer) {
 	/****					LOCAL VARIABLES					  ****/
 	
 	/****     				    FUNCTION           			  ****/	
-	while (!TXSTA1bits.TRMT);	
+/*	while (!TXSTA1bits.TRMT);	
 	TXREG1 = integer;	// Buffer filling [p275]
-}
+}*/

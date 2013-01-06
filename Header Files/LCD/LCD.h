@@ -58,6 +58,7 @@ void writeOnLCDS (int flushStatut, int position, const rom char *string);
  *						else, the STRING will slide on the 2nd line of the LCD
  */
 void writeOnLCDSlidingS (int flushStatut, char line, const rom char *string);
+//void writeOnLCDSlidingV (int flushStatut, char line, char *variable);
 
 /**
  * This function call the prepareLCD() function and write a CHARACTER
@@ -77,7 +78,7 @@ void writeOnLCDC (int flushStatut, int position, char charactere);
  * @param	position	if it is AFTER, the position of the cursor doesn't change
  * 						else, set the cursor to the position (in hex)
  */
-void writeOnLCDV (int flushStatut, int position, char *variable);
+//void writeOnLCDV (int flushStatut, int position, char *variable);
 
 /**
  * This function call the prepareLCD() function and write an INTEGER
@@ -87,7 +88,7 @@ void writeOnLCDV (int flushStatut, int position, char *variable);
  * @param	position	if it is AFTER, the position of the cursor doesn't change
   						else, set the cursor to the position (in hex)
  */
-void writeOnLCDI (int flushStatut, int position, int entier);
+//void writeOnLCDI (int flushStatut, int position, int entier);
 
 /**
  * This function call the prepareLCD() function and write a FLOAT
@@ -97,7 +98,7 @@ void writeOnLCDI (int flushStatut, int position, int entier);
  * @param	position	if it is AFTER, the position of the cursor doesn't change
   						else, set the cursor to the position (in hex)
  */
-void writeOnLCDF(int flushStatut, int position, float reel);
+//void writeOnLCDF(int flushStatut, int position, float reel);
 
 /**
  * Provides a 18 TCY delay

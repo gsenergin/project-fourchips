@@ -25,6 +25,10 @@ void getAuthentication (void);
 
 void setNameAndPassword (const rom char *string, char code1, char code2, char code3, char code4);
 
+void setUsername (char receivedString[]);
+
+void setPassword (void);
+
 /**
  * Prints a message on the LCD to enter the user's password, checks the button pressed and the loginTime.
  * If the button pressed is different than CENTER, it calls the enterCode() function to enter the button on the tableCode[] table.
@@ -49,5 +53,7 @@ void enterCode (char code);
  * If the tryCount is equal to 3, it stops the authentication process.
  */
 void checkCode (void);
+
+void logoff (void);
 
 #endif

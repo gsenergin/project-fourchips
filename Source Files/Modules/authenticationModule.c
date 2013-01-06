@@ -10,12 +10,15 @@
 
 unsigned char IDCB_getAuthentication = 0;
 unsigned char IDCB_waitingOfThePassword = 0;
+extern unsigned char IDCB_serialDispatcher;
 extern unsigned char IDCB_Chronometre;
+extern unsigned char IDCB_Clignotement_LED;
+extern unsigned int elapsedMinutes;
 
-char messageAuthentificationFlag = ON;
+char messageAuthentificationFlag = ON, setPasswordFlag = OFF;
 extern volatile unsigned char RFID_Read_Resultat[10];
 char tablePassword[4];
-extern char SCAN[], LOGINTRUE[], LOGINFALSE[], LOGINTIMEOUT[];
+extern char SCAN[], LOGINTRUE[], LOGINFALSE[], LOGINTIMEOUT[], USER_CHANGE[], PW_ACK[];
 int loginTime = 0;
 
 char button = NONE, tryCount = 0;
@@ -85,7 +88,7 @@ void setNameAndPassword (const rom char *string, char code1, char code2, char co
 	for (i = 0; i < 20; i++)
 		tableName[i] = 0xff;
 		
-	for(i = 0; *(string + i) != '\0' && i < 20; i++) {
+	for(i = 0; i < 19 && *(string + i) != '\0'; i++) {
 		tableName[i] = *(string + i);	// Adds the received string in tableName
 		//writeOnUSART1C(tableName[i]);	// DEBUG
 	}
@@ -101,12 +104,42 @@ void setNameAndPassword (const rom char *string, char code1, char code2, char co
 	RFID_Write(code1, code2, code3, code4, dataSector);
 }
 
+void setUsername (char receivedString[]) {
+	/****					LOCAL VARIABLES					  ****/
+	char i, tableName[20], dataSector;
+	
+	/****     				    FUNCTION           			  ****/	
+	
+	for (i = 0; i < 20; i++)
+		tableName[i] = 0xff;
+		
+	for(i = 0; i < 19 && receivedString[i + 4] != '\0'; i++) {
+		tableName[i] = receivedString[i + 4];	// Adds the received string in tableName
+		//writeOnUSART1C(tableName[i]);	// DEBUG
+	}
+	
+	tableName[i] = '\0';	// Adds a \0 to the end of the frame to be correctly interpreted by the program
+	
+	// Writes the tableName on the sectors 1 to 5
+	for (dataSector = 0x01, i = 0; dataSector < 0x06; dataSector += 0x01, i += 4) {
+		RFID_Write(tableName[i], tableName[i + 1], tableName[i + 2], tableName[i + 3], dataSector);
+	}
+}
+
+void setPassword (void) {
+	setPasswordFlag = ON;
+	TIOSSaveCB (&IDCB_waitingOfThePassword, waitingOfThePassword, 200);
+}	
+
 void waitingOfThePassword (void) {
 	/****					LOCAL VARIABLES					  ****/
 	char i, tableDataToSend[7];
 	
 	/****     				    FUNCTION           			  ****/
-	writeOnLCDSlidingS(FLUSH, 1, "Enter your password + button \"ENTER\"");
+	if (! setPasswordFlag)
+		writeOnLCDSlidingS(FLUSH, 1, "Enter your password + button \"ENTER\"");
+	else
+		writeOnLCDSlidingS(FLUSH, 1, "Enter your new password + button \"ENTER\"");
 	
 	// Prints the entered code on the 2nd line of the LCD, if a code is entered, 
 	// it shows "*", if not, it shows "_"
@@ -129,21 +162,24 @@ void waitingOfThePassword (void) {
 		button = NONE;
 	}
 	
-	loginTime += 200;
+	if (! setPasswordFlag) {
+		loginTime += 200;
 	
-	// If the loginTime arrive to 15000ms, it sends a "Time Out" message to the program C#,
-	// sets the flag to print the authentication message on the LCD to ON and remove the callback
-	if (loginTime >= 15000) {
-		loginTime = 0;
-		tryCount = 0;
-		messageAuthentificationFlag = ON;
-		
-		strcpy(tableDataToSend, LOGINTIMEOUT);
-		tableDataToSend[ strlen(tableDataToSend) ] = '\n';
-		writeOnUSART1V(tableDataToSend);
-		
-		TIOSRemoveCB(&IDCB_waitingOfThePassword);
-	}
+		// If the loginTime arrive to 15000ms, it sends a "Time Out" message to the program C#,
+		// sets the flag to print the authentication message on the LCD to ON and remove the callback
+		if (loginTime >= 15000) {
+			loginTime = 0;
+			tryCount = 0;
+			messageAuthentificationFlag = ON;
+			//slidingStatutes();
+			
+			strcpy(tableDataToSend, LOGINTIMEOUT);
+			tableDataToSend[ strlen(tableDataToSend) ] = '\n';
+			writeOnUSART1V(tableDataToSend);
+			
+			TIOSRemoveCB(&IDCB_waitingOfThePassword);
+		}
+	}	
 }
 
 void enterCode (char code) {
@@ -177,32 +213,67 @@ void checkCode (void) {
 	char i, tableDataToSend[7];
 	
 	/****     				    FUNCTION           			  ****/		
-	if (tabCode[3] != '_') { //Check if the code is entirely encoded		
-		if ((tabCode[0] == tablePassword[0]) & (tabCode[1] == tablePassword[1]) & (tabCode[2] == tablePassword[2]) & (tabCode[3] == tablePassword[3])) { //Good code entered
-			strcpy(tableDataToSend, LOGINTRUE);
-			TIOSRemoveCB(&IDCB_waitingOfThePassword);
-			TIOSSaveCB(&IDCB_Chronometre, chronometre, 60000);
-		}	
-		else { //Wrong code entered
-			strcpy(tableDataToSend, LOGINFALSE);
-			
-			// Cleans the tabCode table
-			for (i = 0; i < 4; i++)
-				tabCode[i] = '_';
-			
-			tryCount++;
-			
-			// If the user fails to login 3 times, it stop the authentication procedure
-			if (tryCount == 3) {
-				tryCount = 0;
+	if (tabCode[3] != '_') { //Check if the code is entirely encoded
+		if (! setPasswordFlag) {		
+			if ((tabCode[0] == tablePassword[0]) & (tabCode[1] == tablePassword[1]) & (tabCode[2] == tablePassword[2]) & (tabCode[3] == tablePassword[3])) { //Good code entered
+				strcpy(tableDataToSend, LOGINTRUE);
 				TIOSRemoveCB(&IDCB_waitingOfThePassword);
-				messageAuthentificationFlag = ON;
+				TIOSSaveCB(&IDCB_Chronometre, chronometre, 60000);
+				messageAuthentificationFlag = OFF;
 			}	
+			else { //Wrong code entered
+				strcpy(tableDataToSend, LOGINFALSE);
+				
+				tryCount++;
+				
+				// If the user fails to login 3 times, it stop the authentication procedure
+				if (tryCount == 3) {
+					tryCount = 0;
+					TIOSRemoveCB(&IDCB_waitingOfThePassword);
+					messageAuthentificationFlag = ON;
+				}	
+			}
+			
+			loginTime = 0; // Resets the loginTime to allow new 15000ms to re-enter a code
 		}
+		else {
+			strcpy(tableDataToSend, PW_ACK);
+			// Writes the 4 codes on the sector 6
+			RFID_Write(tabCode[0], tabCode[1], tabCode[2], tabCode[3], 0x06);
+			
+			TIOSRemoveCB(&IDCB_waitingOfThePassword);
+		}	
+		
+		// Cleans the tabCode table
+		for (i = 0; i < 4; i++)
+			tabCode[i] = '_';
 		
 		tableDataToSend[ strlen(tableDataToSend) ] = '\n';
 		writeOnUSART1V(tableDataToSend);
-		
-		loginTime = 0; // Resets the loginTime to allow new 15000ms to re-enter a code
 	}
+}	
+
+void logoff (void) {
+	unsigned char i, tempIDCB;
+	
+	for(i = 1; i < MAX_CB; i++) {
+		if (i != IDCB_serialDispatcher)
+			tempIDCB = i;
+			TIOSRemoveCB(&tempIDCB);
+	}
+	
+	messageAuthentificationFlag = ON;
+	setPasswordFlag = OFF;
+	loginTime = 0;
+	button = NONE;
+	tryCount = 0;
+	
+	PORT_LED = OFF;
+	elapsedMinutes = 0;
+	
+	setIP_ADDR((192ul), (168ul), (1ul), (200ul));
+	setMASK((255ul), (255ul), (255ul), (0ul));
+	setGATEWAY((192ul), (168ul), (1ul), (254ul));
+	setPRIMARY_DNS((8ul), (8ul), (8ul), (8ul));
+	setSECONDARY_DNS((8ul), (8ul), (4ul), (4ul));
 }	
