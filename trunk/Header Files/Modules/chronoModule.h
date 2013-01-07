@@ -1,5 +1,5 @@
-#ifndef __LED_H
-#define __LED_H
+#ifndef __CHRONOMODULE_H
+#define __CHRONOMODULE_H
 
 /******************************************************************
 **						  INCLUDES FILES						 **
@@ -11,14 +11,16 @@
 ** 				   ENUMERATIONS - DEFINITIONS					 **
 ******************************************************************/
 
-//Définit le nombre maximal de callback de type Chrono
-
 
 /******************************************************************
 ** 	        		  FUNCTION PROTOTYPES	    	  			 **
 ******************************************************************/
 
+/**
+ * This function is called each 60000ms and increments a value that determine
+ * the connection time of the user.
+ * This time is converted in a format : #07@hh;mm and sent to the C# program.
+ */
+void chronometre(void);
 
-void clignotementLED(char cpt[] );
-void clignotement(void);
 #endif

@@ -50,7 +50,6 @@ void setIP_ADDR (unsigned long newIP_ADDR_BYTE1, unsigned long newIP_ADDR_BYTE2,
 	IP_ADDR_BYTE3 = newIP_ADDR_BYTE3;
 	IP_ADDR_BYTE4 = newIP_ADDR_BYTE4;
 	InitAppConfig();
-	PORT_LED ^= ON;
 }
 
 void setMASK (unsigned long newMASK_BYTE1, unsigned long newMASK_BYTE2, unsigned long newMASK_BYTE3, unsigned long newMASK_BYTE4) {

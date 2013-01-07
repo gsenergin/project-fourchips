@@ -2,21 +2,21 @@
 #define __ADC_H
 
 /******************************************************************
-**						  INCLUDES FILES						 **
+**                                                INCLUDES FILES                                                 **
 ******************************************************************/
 
 #include "main.h"
 
 /******************************************************************
-** 				   ENUMERATIONS - DEFINITIONS					 **
+**                                 ENUMERATIONS - DEFINITIONS                                    **
 ******************************************************************/
 
-#define CANALPHOTODIODE		24		// Used as channel for ADC acquisition [p293]
-#define CANALBORNIER		8		// Used as channel for ADC acquisition [p293]
-#define	ADCGoDone			ADCON0bits.GO_NOT_DONE
+#define CANALPHOTODIODE         24              // Used as channel for ADC acquisition [p293]
+#define CANALBORNIER            8               // Used as channel for ADC acquisition [p293]
+#define ADCGoDone                       ADCON0bits.GO_NOT_DONE
 
 /******************************************************************
-** 	        		  FUNCTION PROTOTYPES	    	  			 **
+**                                FUNCTION PROTOTYPES                                    **
 ******************************************************************/
 
 /**
@@ -28,15 +28,15 @@ void initADC (void);
 /**
  * Sets the channel to use for the ADC acquisition
  *
- * @param	canal			channel <= 27
+ * @param       canal                   channel <= 27
  */
-void setADCChannel (int canal);
+void setADCChannel (char canal);
 
 /**
  * Makes an average of 10 ADC acquisitions 
  * and returns it as a float number
  *
- * @return					average of 10 ADC acquisitions
+ * @return                                      average of 10 ADC acquisitions
  */
 float ADCAcquisition (void);
 

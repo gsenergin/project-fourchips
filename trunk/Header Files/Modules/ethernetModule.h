@@ -15,8 +15,17 @@
 ** 	        		  FUNCTION PROTOTYPES	    	  			 **
 ******************************************************************/
 
+/**
+ * Calls the StackTask() and StackApplications() functions.
+ * This function is called on the TIOSStart() loop.
+ */
 void stackUpdate (void);
 
+/**
+ * Modify the ethernet parameter depending on the receivedString.
+ *
+ * @param	receivedString			the code + the IP information to change
+ */
 void updateCardNIC (char receivedString[]);
 
 #endif

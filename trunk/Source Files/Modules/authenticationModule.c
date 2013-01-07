@@ -8,20 +8,22 @@
 ** 		      	   GLOBAL VARIABLES (inside the file)			 **
 ******************************************************************/
 
-unsigned char IDCB_getAuthentication = 0;
-unsigned char IDCB_waitingOfThePassword = 0;
+extern unsigned char IDCB_getAuthentication;
+extern unsigned char IDCB_waitingOfThePassword;
 extern unsigned char IDCB_serialDispatcher;
 extern unsigned char IDCB_Chronometre;
 extern unsigned char IDCB_Clignotement_LED;
+extern unsigned char IDCB_getLight;
+extern unsigned char IDCB_getTemperature;
 extern unsigned int elapsedMinutes;
 
-char messageAuthentificationFlag = ON, setPasswordFlag = OFF;
+unsigned char messageAuthentificationFlag = ON, setPasswordFlag = OFF;
 extern volatile unsigned char RFID_Read_Resultat[10];
 char tablePassword[4];
 extern char SCAN[], LOGINTRUE[], LOGINFALSE[], LOGINTIMEOUT[], USER_CHANGE[], PW_ACK[];
 int loginTime = 0;
 
-char button = NONE, tryCount = 0;
+unsigned char button = NONE, tryCount = 0;
 volatile unsigned char tabCode[4] = {'_', '_', '_', '_'};	// Used to save the entered code
 
 /******************************************************************
@@ -80,30 +82,6 @@ void getAuthentication (void) {
 	}
 }
 
-void setNameAndPassword (const rom char *string, char code1, char code2, char code3, char code4) {
-	/****					LOCAL VARIABLES					  ****/
-	char i, tableName[20], dataSector;
-	
-	/****     				    FUNCTION           			  ****/		
-	for (i = 0; i < 20; i++)
-		tableName[i] = 0xff;
-		
-	for(i = 0; i < 19 && *(string + i) != '\0'; i++) {
-		tableName[i] = *(string + i);	// Adds the received string in tableName
-		//writeOnUSART1C(tableName[i]);	// DEBUG
-	}
-	
-	tableName[i] = '\0';	// Adds a \0 to the end of the frame to be correctly interpreted by the program
-	
-	// Writes the tableName on the sectors 1 to 5
-	for (dataSector = 0x01, i = 0; dataSector < 0x06; dataSector += 0x01, i += 4) {
-		RFID_Write(tableName[i], tableName[i + 1], tableName[i + 2], tableName[i + 3], dataSector);
-	}
-	
-	// Writes the 4 codes on the sector 6
-	RFID_Write(code1, code2, code3, code4, dataSector);
-}
-
 void setUsername (char receivedString[]) {
 	/****					LOCAL VARIABLES					  ****/
 	char i, tableName[20], dataSector;
@@ -136,6 +114,8 @@ void waitingOfThePassword (void) {
 	char i, tableDataToSend[7];
 	
 	/****     				    FUNCTION           			  ****/
+	// When the setPasswordFlag is ON, this function is used to re-encode a new password on the RFID card
+	// else, it is used to enter the login password.
 	if (! setPasswordFlag)
 		writeOnLCDSlidingS(FLUSH, 1, "Enter your password + button \"ENTER\"");
 	else
@@ -214,12 +194,15 @@ void checkCode (void) {
 	
 	/****     				    FUNCTION           			  ****/		
 	if (tabCode[3] != '_') { //Check if the code is entirely encoded
-		if (! setPasswordFlag) {		
+		if (! setPasswordFlag) { // Verification done when it is the login process		
 			if ((tabCode[0] == tablePassword[0]) & (tabCode[1] == tablePassword[1]) & (tabCode[2] == tablePassword[2]) & (tabCode[3] == tablePassword[3])) { //Good code entered
 				strcpy(tableDataToSend, LOGINTRUE);
 				TIOSRemoveCB(&IDCB_waitingOfThePassword);
 				TIOSSaveCB(&IDCB_Chronometre, chronometre, 60000);
+				TIOSSaveCB(&IDCB_getLight, getLight, 1000);
+				TIOSSaveCB(&IDCB_getTemperature, getTemperature, 1000);
 				messageAuthentificationFlag = OFF;
+				writeOnLCDS(FLUSH, 0x00, "Welcome");
 			}	
 			else { //Wrong code entered
 				strcpy(tableDataToSend, LOGINFALSE);
@@ -235,7 +218,7 @@ void checkCode (void) {
 			}
 			
 			loginTime = 0; // Resets the loginTime to allow new 15000ms to re-enter a code
-		}
+		} // Verification done when it is the new password process
 		else {
 			strcpy(tableDataToSend, PW_ACK);
 			// Writes the 4 codes on the sector 6
@@ -256,12 +239,16 @@ void checkCode (void) {
 void logoff (void) {
 	unsigned char i, tempIDCB;
 	
-	for(i = 1; i < MAX_CB; i++) {
-		if (i != IDCB_serialDispatcher)
-			tempIDCB = i;
-			TIOSRemoveCB(&tempIDCB);
-	}
+	// Removes all the callbacks in progress
+	TIOSRemoveCB (&IDCB_getAuthentication);
+	TIOSRemoveCB (&IDCB_waitingOfThePassword);
+	TIOSRemoveCB (&IDCB_serialDispatcher);
+	TIOSRemoveCB (&IDCB_Chronometre);
+	TIOSRemoveCB (&IDCB_Clignotement_LED);
+	TIOSRemoveCB (&IDCB_getLight);
+	TIOSRemoveCB (&IDCB_getTemperature);
 	
+	// Resets the variable
 	messageAuthentificationFlag = ON;
 	setPasswordFlag = OFF;
 	loginTime = 0;
@@ -276,4 +263,7 @@ void logoff (void) {
 	setGATEWAY((192ul), (168ul), (1ul), (254ul));
 	setPRIMARY_DNS((8ul), (8ul), (8ul), (8ul));
 	setSECONDARY_DNS((8ul), (8ul), (4ul), (4ul));
+	
+	// Saves the serialDispatcher CB
+	TIOSSaveCB (&IDCB_serialDispatcher, serialDispatcher, 200);
 }	
