@@ -21,7 +21,7 @@ void initLCD (void) {
 	OpenXLCD(FOUR_BIT & LINES_5X7);		// Configures I/O pins for external LCD
 }
 
-void prepareLCD (int flushStatut, int position) {
+void prepareLCD (char flushStatut, char position) {
 	/****					LOCAL VARIABLES					  ****/
 	
 	/****     				    FUNCTION           			  ****/
@@ -36,7 +36,7 @@ void prepareLCD (int flushStatut, int position) {
 	}
 }	
 
-void writeOnLCDS (int flushStatut, int position, const rom char *string) {
+void writeOnLCDS (char flushStatut, char position, const rom char *string) {
 	/****					LOCAL VARIABLES					  ****/
 	
 	/****     				    FUNCTION           			  ****/
@@ -46,7 +46,7 @@ void writeOnLCDS (int flushStatut, int position, const rom char *string) {
 	putrsXLCD(string);
 }
 
-void writeOnLCDSlidingS (int flushStatut, char line, const rom char *string) {
+void writeOnLCDSlidingS (char flushStatut, char line, const rom char *string) {
 	/****					LOCAL VARIABLES					  ****/
 	unsigned char i, shift;
 	
@@ -105,7 +105,7 @@ void writeOnLCDSlidingS (int flushStatut, char line, const rom char *string) {
 	}	
 }
 
-/*void writeOnLCDSlidingV (int flushStatut, char line, char *variable) {
+/*void writeOnLCDSlidingV (char flushStatut, char line, char *variable) {
 	/****					LOCAL VARIABLES					  ****/
 /*	unsigned char i, shift;
 	char* string = variable;
@@ -165,7 +165,7 @@ void writeOnLCDSlidingS (int flushStatut, char line, const rom char *string) {
 	}	
 }*/
 
-void writeOnLCDC (int flushStatut, int position, char charactere) {
+void writeOnLCDC (char flushStatut, char position, char charactere) {
 	/****					LOCAL VARIABLES					  ****/
 	
 	/****     				    FUNCTION           			  ****/
@@ -175,7 +175,7 @@ void writeOnLCDC (int flushStatut, int position, char charactere) {
 	putcXLCD(charactere);
 }
 /*
-void writeOnLCDV (int flushStatut, int position, char *variable) {
+void writeOnLCDV (char flushStatut, char position, char *variable) {
 	/****					LOCAL VARIABLES					  ****/
 	
 	/****     				    FUNCTION           			  ****/
@@ -185,7 +185,7 @@ void writeOnLCDV (int flushStatut, int position, char *variable) {
 	putsXLCD(variable);
 }
 
-void writeOnLCDI (int flushStatut, int position, int entier) {
+void writeOnLCDI (char flushStatut, char position, int entier) {
 	/****					LOCAL VARIABLES					  ****/
 /*	char string[6];
 	
@@ -198,7 +198,7 @@ void writeOnLCDI (int flushStatut, int position, int entier) {
 	putsXLCD(string);
 }
 
-void writeOnLCDF(int flushStatut, int position, float reel) {
+void writeOnLCDF(char flushStatut, char position, float reel) {
 	/****					LOCAL VARIABLES					  ****/
 /*	char string[6];
 	

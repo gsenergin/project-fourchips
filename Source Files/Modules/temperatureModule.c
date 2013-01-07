@@ -2,13 +2,13 @@
 **						  INCLUDES FILES						 **
 ******************************************************************/
 
-#include "Modules/moduleTemp.h"
+#include "Modules/temperatureModule.h"
 
 /******************************************************************
 ** 		      	   GLOBAL VARIABLES (inside the file)			 **
 ******************************************************************/
 
-unsigned char IDCB_getTemperature = 0;
+extern unsigned char IDCB_getTemperature;
 extern char TEMP[];
 
 /******************************************************************
@@ -17,8 +17,10 @@ extern char TEMP[];
 
 void getTemperature(void)
 {
-	char currentTempString[6], tableDataToSend[15];
-	
+	/****					LOCAL VARIABLES					  ****/
+	char currentTempString[6], tableDataToSend[10];
+			
+	/****     				    FUNCTION           			  ****/
 	float currentTemp = Read_Temperature();
 	
 	if(currentTemp < 50){

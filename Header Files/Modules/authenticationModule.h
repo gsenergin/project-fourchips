@@ -17,16 +17,24 @@
 
 /**
  * Scans and saves the information of a RFID card (name + password).
- * If those information are found, it sends the correct info to the the program C#
+ * If those information are found, it sends the correct info to the program C#
  * and calls the 2nd part of the authentication process (the function waitingOfThePassword()
  * as a callback each 200ms).
  */
 void getAuthentication (void);
 
-void setNameAndPassword (const rom char *string, char code1, char code2, char code3, char code4);
-
+/**
+ * Saves the receivedString on the 1 to 5 sectors of the RFID card.
+ *
+ * @param	receivedString			the new fristname and lastname to save
+ */
 void setUsername (char receivedString[]);
 
+/**
+ * Saves the receivedString on the 6th sector of the RFID card.
+ *
+ * @param	receivedString			the new password to save
+ */
 void setPassword (void);
 
 /**
@@ -34,6 +42,8 @@ void setPassword (void);
  * If the button pressed is different than CENTER, it calls the enterCode() function to enter the button on the tableCode[] table.
  * If the button pressed is CENTER, it calls the checkCode().
  * If the loginTime arrive to 15000ms, it stops the authentication process.
+ *
+ * This function is necessary to enter/verify a password to logon or to change his password.
  */
 void waitingOfThePassword (void);
 
@@ -54,6 +64,9 @@ void enterCode (char code);
  */
 void checkCode (void);
 
+/**
+ * Resets the variable and removes the callbacks when the GOODBYE code is sent.
+ */
 void logoff (void);
 
 #endif

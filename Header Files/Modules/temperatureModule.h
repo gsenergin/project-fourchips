@@ -1,5 +1,5 @@
-#ifndef __CHRONO_H
-#define __CHRONO_H
+#ifndef __TEMPERATUREMODULE_H
+#define __TEMPERATUREMODULE_H
 
 /******************************************************************
 **						  INCLUDES FILES						 **
@@ -11,15 +11,10 @@
 ** 				   ENUMERATIONS - DEFINITIONS					 **
 ******************************************************************/
 
-
 /******************************************************************
 ** 	        		  FUNCTION PROTOTYPES	    	  			 **
 ******************************************************************/
 
-/**
- * Initializes the ADC and configures the photodiode and ext_int
- * port with these options : TRIS = IN, ANSEL = ANALOGIC
- */
-void chronometre(void);
+void getTemperature(void);
 
 #endif

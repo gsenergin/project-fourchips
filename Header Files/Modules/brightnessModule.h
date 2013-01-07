@@ -1,5 +1,5 @@
-#ifndef __MODULETEMP_H
-#define __MODULETEMP_H
+#ifndef __BRIGHTNESSMODULE_H
+#define __BRIGHTNESSMODULE_H
 
 /******************************************************************
 **						  INCLUDES FILES						 **
@@ -11,10 +11,12 @@
 ** 				   ENUMERATIONS - DEFINITIONS					 **
 ******************************************************************/
 
+#define MAX_LIGHT 3
+
 /******************************************************************
 ** 	        		  FUNCTION PROTOTYPES	    	  			 **
 ******************************************************************/
 
-void getTemperature(void);
+void getLight(void);
 
 #endif

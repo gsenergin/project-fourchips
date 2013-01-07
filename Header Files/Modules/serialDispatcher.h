@@ -16,8 +16,8 @@
 ******************************************************************/
 
 /**
- * This function is recalled each 200ms and manage the frame sent
- * by the C# program and call or save as callback the appropriate function(s)
+ * This function is recalled each 200ms and manages the frame sent
+ * by the C# program and calls or saves as callback the appropriate function(s)
  */
 void serialDispatcher (void);
 

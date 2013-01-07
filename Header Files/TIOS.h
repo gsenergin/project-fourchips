@@ -24,10 +24,13 @@
  * Initializes the LED
  * Initializes the RELAY
  * Initializes the Buttons
+ * Initializes the TMR0
+ * Initializes the ETHERNET
  * Initializes the TMR1
  * Initializes the USART1
  * Initializes the RFID
  * Initializes the LCD
+ * Initializes the ADC
  * Initializes the interruptions
  * Initializes the necessary tables for callback
  */

@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <delays.h>
+#include "strtoul.h"
 #include "INIT.h"
 #include "TIOS.h"
 #include "TIMERS.h"
@@ -19,11 +20,13 @@
 #include "ETHERNET/ETHERNET.h"
 #include "RFID.h"
 #include "Modules/authenticationModule.h"
-#include "Modules/serialDispatcher.h"
+#include "Modules/brightnessModule.h"
+#include "Modules/chronoModule.h"
 #include "Modules/ethernetModule.h"
-#include "Modules/CHRONO.h"
-#include "Modules/LED.h"
-#include "strtoul.h"
+#include "Modules/ledModule.h"
+#include "Modules/serialDispatcher.h"
+#include "Modules/temperatureModule.h"
+
 
 /******************************************************************
 ** 					ENUMERATIONS - DEFINITIONS					 **
@@ -35,7 +38,6 @@ enum {NUMERIC, ANALOGIC};
 enum {FALSE, TRUE};
 
 enum {NOFLUSH, FLUSH, AFTER};					// Used on writeOnLCDx functions
-enum {OFF, ON, CLI_2SEC, CLI_1SEC};				// Used with the actionOnLED variable
 enum {NONE, UP, DOWN, LEFT, CENTER, RIGHT};		// Used with the button variable
 
 #define PORT_INT0	PORTBbits.RB0		// [p152]
@@ -67,7 +69,5 @@ enum {NONE, UP, DOWN, LEFT, CENTER, RIGHT};		// Used with the button variable
 ******************************************************************/
 
 void main (void);
-
-void test (void);
 
 #endif

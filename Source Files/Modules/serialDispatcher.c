@@ -9,9 +9,9 @@
 ******************************************************************/
 
 extern unsigned char IDCB_getAuthentication;
-extern char messageAuthentificationFlag;
+extern unsigned char messageAuthentificationFlag;
 
-unsigned char IDCB_serialDispatcher = 0;
+extern unsigned char IDCB_serialDispatcher;
 volatile unsigned char receivedChar, i_receivedString = 0;
 
 char receivedString[25] = " ", EMPTY[] = " ", 
@@ -25,12 +25,13 @@ char receivedString[25] = " ", EMPTY[] = " ",
 	CARD_GW[] = "#33@",
 	CARD_DNS1[] = "#34@",
 	CARD_DNS2[] = "#35@",
+	TEMP[] = "#04@",
 	LED[] = "#06@",
 	USER_CHANGE[] = "#81@",
 	PW_CHANGE[] = "#82@",
 	PW_ACK[] = "#82@",
 	GOODBYE[] = "#99@";
-
+	
 /******************************************************************
 ** 		      	   		   MAIN FUNCTIONS 				  		 **
 ******************************************************************/
@@ -40,13 +41,10 @@ void serialDispatcher (void) {
 	char i;
 	
 	/****     				    FUNCTION           			  ****/
-	for (i = 4; i < 25 && receivedString[i] != '\0'; i++);
-	if (i < 25 && receivedString[0] == '#' && receivedString[3] == '@') {
+	for (i = 4; i < 25 && receivedString[i] != '\0'; i++); // Checks if a \0 is present on receivedString (because it is necessary for the strncmp function later)
+	if (i < 25 && receivedString[0] == '#' && receivedString[3] == '@') { // If i is minus than 25, a /0 is present on receivedString, then after, it checks if the first character is # ad the 4th is @
 		if (strncmp(receivedString, HELLO, 4) == 0) {
 			TIOSSaveCB(&IDCB_getAuthentication, getAuthentication, 2200);
-			//writeOnUSART1S("#01@Arnaud Helin\n");
-			//Delay10KTCYx(255);
-			//writeOnUSART1S("#02@1\n");
 		}
 		else if ((strncmp(receivedString, CARD_IP, 4) == 0) ||
 			(strncmp(receivedString, CARD_NETWORK, 4) == 0) ||
@@ -76,5 +74,9 @@ void serialDispatcher (void) {
 		writeOnLCDS(NOFLUSH, 0x40, "with RFID card");
 	}
 	
-	PORT_RELAY ^= ON;
+	/* 	This instruction switches the Relay each time the serialDispatcher function ends, 
+	 * 	because of our presumed problem of memory, if the program is still running,
+	 * 	we'll listen the relay continually switches
+	 */
+	PORT_RELAY ^= ON;	
 }	

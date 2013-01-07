@@ -11,13 +11,23 @@ void (*CB_PTR_Table[ MAX_CB ])(void);
 unsigned int CB_TIME_Table[ MAX_CB ];
 volatile unsigned int CB_TICK_Table[ MAX_CB ];
 
+unsigned char IDCB_serialDispatcher = 0;
+unsigned char IDCB_stackUpdate = 0;
+unsigned char IDCB_getAuthentication = 0;
+unsigned char IDCB_waitingOfThePassword = 0;
+unsigned char IDCB_Chronometre = 0;
+unsigned char IDCB_Clignotement_LED = 0;
+unsigned char IDCB_getLight = 0;
+unsigned char IDCB_getTemperature = 0;
+
 extern volatile unsigned char RFID_Write_Flag;
 extern volatile unsigned char RFID_Read_Flag;
 extern volatile unsigned char RFID_i;
 extern volatile unsigned char RFID_Read_Resultat[10];
 
 extern volatile unsigned char receivedChar, i_receivedString;
-extern char receivedString[21], button;
+extern char receivedString[21];
+extern unsigned char button;
 
 /******************************************************************
 ** 	       COMPILATION INSTRUCTIONS FOR INTERRUPTIONS 	    	 **
@@ -89,6 +99,11 @@ void TIOSInitialization (void) {
 	
 	// Initialization of the LCD
 	initLCD();
+	
+	// Initialization of the ADC
+	initADC();
+	setADCChannel(CANALPHOTODIODE);
+	ADCAcquisition();
 	
 	/****     		INITIALIZATION OF INTERRUPTIONS           ****/
 	initInterrupts();
