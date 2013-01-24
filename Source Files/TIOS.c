@@ -102,7 +102,7 @@ void TIOSInitialization (void) {
 	
 	// Initialization of the ADC
 	initADC();
-	setADCChannel(CANALPHOTODIODE);
+	setADCChannel(CANALBORNIER);
 	ADCAcquisition();
 	
 	/****     		INITIALIZATION OF INTERRUPTIONS           ****/
